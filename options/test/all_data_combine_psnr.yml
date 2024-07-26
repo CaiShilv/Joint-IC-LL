@@ -1,0 +1,44 @@
+### must be same as 
+
+name: all_data_combine
+suffix: ~  # add suffix to saved images
+model: video_base3
+distortion: sr
+scale: 1
+crop_border: ~  # crop border when evaluation. If None(~), crop the scale pixels
+gpu_ids: ~     # [0,1,2] or ~
+
+datasets:
+  test:  # the 1st test dataset
+    name: test
+    mode: all_data_combine
+    
+    dataroot_GT:  xxx/combine_dataset/test/GT/SID/long_sid2_test             #  you shoud input ".npy" format
+    dataroot_LQ:  xxx/combine_dataset/test/LQ/SID/short_sid2_test          #  you shoud input ".npy" format
+    
+    
+    train_size: [960, 512] # for SID and SMID
+    # train_size:  [1920, 1080]  # for SDSD-indoor and SDSD-out-door
+    
+    cache_data: true
+    N_frames: 5
+    padding: new_info
+    calculate_real_bpp: true # true or false
+
+#### network structures
+network_G:
+  which_model_G: low_light_transformer
+  nf: 128
+  nframes: 5      # must be same as N_frames in dataset.
+  groups: 8
+  front_RBs: 1
+  back_RBs: 1
+  local_RBs: 2
+  predeblur: true     # default false
+  HR_in: true
+  w_TSA: true
+
+#### path
+path:
+  root: ./
+  pretrain_model_G: xxx/lambda_0.0001.pth

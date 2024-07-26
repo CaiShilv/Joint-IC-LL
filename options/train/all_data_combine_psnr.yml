@@ -1,0 +1,108 @@
+#### general settings
+name: all_data_combine
+use_tb_logger: true
+model: video_base3
+distortion: sr
+scale: 1
+gpu_ids: [4, 5, 6, 7]
+
+#### datasets
+datasets:
+  train:
+    datasetlist: [SID, SDSD, SMID] # [SID, SDSD_indoor, SDSD_outdoor, SEMI_stage1, SEMI_stage2_LOL, SEMI_stage2_other, SMID]
+    name: indoor
+    mode: all_data_combine
+    interval_list: [1]
+    random_reverse: false
+    border_mode: false
+    dataroot_GT:  xxx # your GT train dataset dir
+    dataroot_LQ: xxx # your lowlight train dataset dir
+    train_size: [960 , 512]   # [W,H]
+    cache_keys: ~
+    cache_data: true
+    padding: new_info
+#    testing_dir: pair11,pair21,pair1,pair19,pair4,pair9
+
+    N_frames: 5      # how many frames as a input.
+    use_shuffle: true
+    n_workers: 4     # per GPU
+    batch_size: 8
+    GT_size: 256     # size you want to crop out as input sample.
+    LQ_size: 256
+    use_flip: true
+    use_rot: true
+    color: RGB
+  val:
+    name: REDS4
+    mode: all_data_combine
+    dataroot_GT: xxx  # your GT val dataset dir
+    dataroot_LQ: xx   # your GT val dataset dir
+    cache_data: true
+    N_frames: 5
+    padding: new_info
+    val_size: [960, 512]
+
+#### network structures
+network_G:
+  which_model_G: low_light_transformer
+  nf: 128
+  nframes: 5      # must be same as N_frames in dataset.
+  groups: 8
+  front_RBs: 1
+  back_RBs: 1
+  local_RBs: 2
+  predeblur: true     # default false
+  HR_in: true       # true if size(input) == size(HR)
+  w_TSA: true
+#### path
+path:
+  root: ./
+  strict_load: true
+  val_images: ./experiments/val
+  pretrain_model_G: ~   # load pretrain model
+  resume_state: ~            #load pretrain state
+
+#### training settings: learning rate scheme, loss
+train:
+  lr_G: !!float 1e-4
+  lr_aux: !!float 1e-3
+  lr_scheme: LambdaLR
+  lr_gamma: 0.5
+  milestones: [500000, 600000, 700000, 850000]
+  milestones_aux: [300000, 400000, 500000, 600000, 700000]
+  clip_max_norm: 1.0
+  loss_cap: 10000000
+  beta1: 0.9
+  beta2: 0.99
+  niter: 1300000
+  ft_tsa_only: 0
+  warmup_iter: -1         # -1: no warm up
+  warm_up_counts: 20
+  pretrain_iters: 150000
+  finetune: true # true or false  
+  compress: true          # ture or false
+  T_period: [1300000]
+  restarts: [1300000]
+  restart_weights: [1]
+  eta_min: !!float 1e-7
+
+  pixel_criterion: cb
+  pixel_weight: 1.0
+  val_freq: !!float 2000
+
+  manual.resize960x512_seed: 0
+
+  criterions:
+    criterion_metric: l1   # mse or ms-ssim  or  cb  or  l1
+    criterion_fea: l1      # l1  or   l2     or  cb     
+  lambdas:
+    lambda_metric: 0.024
+    lambda_fea: 0.
+    lambda_vgg: 0.
+    lambda_bpp: 1
+
+
+#### logger
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 2000
