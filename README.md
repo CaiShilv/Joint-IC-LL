@@ -22,7 +22,7 @@ Different from original SDSD datasets with dynamic scenes, we utilize its static
 
 And you can download the SDSD-indoor and SDSD-outdoor from [baidu pan](https://pan.baidu.com/s/1rfRzshGNcL0MX5soRNuwTA) (验证码: jo1v) and [baidu pan](https://pan.baidu.com/s/1JzDQnFov-u6aBPPgjSzSxQ) (验证码: uibk), and there should contain "indoor_static_np" and "outdoor_static_np".
 
-**Note:** It is more recommended that you download the dataset ([baidu pan]() (验证码: )) converted and integrated with my comments.
+**Note:** It is more recommended that you download the dataset ([baidu pan](https://pan.baidu.com/s/1zyDsJpugLg57KAtS3MbqSw) (验证码: hxiu)) converted and integrated with my comments.
 
 ## Project Setup
 
